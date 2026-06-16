@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Kampung Inggris Pontianak</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#00003c",
+            secondary: "#b22b1d",
+            background: "#f9f9fc",
+            surface: "#ffffff",
+            "surface-bright": "#f9f9fc",
+            "outline-variant": "#c6c5d5",
+            "on-surface-variant": "#464653"
+          },
+          fontFamily: {
+            "display-lg": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "headline-sm": ["Hanken Grotesk"],
+            "body-lg": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "label-md": ["Hanken Grotesk"],
+            caption: ["Hanken Grotesk"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: "Hanken Grotesk", sans-serif;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+
+    .sliding-container {
+      transition: all 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+      perspective: 2000px;
+      overflow: hidden;
+    }
+
+    .panel-branding {
+      transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1), background-color 0.8s ease, opacity 0.8s ease;
+      z-index: 20;
+      position: relative;
+    }
+
+    .panel-form {
+      transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1), background-color 0.8s ease, color 0.8s ease;
+      z-index: 10;
+    }
+
+    .panel-branding::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -1px;
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.05));
+      pointer-events: none;
+      z-index: 21;
+      transition: opacity 0.8s ease;
+    }
+
+    .state-swapped .panel-branding {
+      transform: translateX(100%);
+    }
+
+    .state-swapped .panel-branding::after {
+      right: auto;
+      left: -1px;
+      background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.1));
+    }
+
+    .state-swapped .panel-form {
+      transform: translateX(-100%);
+      background-color: #00003c;
+      color: #ffffff;
+    }
+
+    @media (max-width: 767px) {
+      .sliding-container {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+      }
+
+      .panel-branding,
+      .panel-form {
+        width: 100% !important;
+        transform: none !important;
+      }
+
+      .state-swapped .panel-branding,
+      .state-swapped .panel-form {
+        transform: none !important;
+      }
+
+      .panel-branding::after {
+        display: none;
+      }
+    }
+
+    .overlay-gradient {
+      background: linear-gradient(135deg, #00003c 0%, #b22b1d 100%);
+      transition: background 0.8s ease;
+    }
+
+    .state-swapped .overlay-gradient {
+      background: linear-gradient(135deg, #f9f9fc 0%, #edeef1 100%);
+    }
+
+    .shimmer-effect {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-effect::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.05) 40%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 60%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(-30deg);
+      animation: shimmer 6s infinite linear;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%) rotate(-30deg);
+      }
+
+      100% {
+        transform: translateX(100%) rotate(-30deg);
+      }
+    }
+
+    .state-swapped .form-input {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .state-swapped .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .state-swapped .form-label {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
+</head>
+
+<body class="bg-background text-primary min-h-screen flex flex-col">
+  <header class="w-full top-0 sticky z-50 bg-background flex items-center justify-between px-6 py-4 shadow-sm">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-primary">security</span>
+      <span class="font-headline-sm font-bold tracking-tight text-primary">Kampung Inggris Pontianak</span>
+    </div>
+
+    <nav class="hidden md:flex gap-8 items-center">
+      <a class="text-outline-variant hover:text-primary transition-colors font-label-md" href="#" id="network-status">
+        Network Status
+      </a>
+      <button class="bg-secondary text-white px-6 py-2 rounded-lg font-label-md transition-all hover:brightness-110 active:scale-95">
+        Support
+      </button>
+    </nav>
+  </header>
+
+  <main class="flex-grow flex items-center justify-center px-4 py-12 md:py-24">
+    <div class="relative w-full max-w-[1000px] min-h-[650px] md:min-h-[600px] flex overflow-hidden rounded-[2rem] border border-outline-variant bg-surface shadow-2xl sliding-container" id="door-container">
+
+      <div class="panel-branding w-1/2 relative flex flex-col justify-center items-center text-center p-8 md:p-12 overlay-gradient cursor-pointer group shimmer-effect" id="branding-side">
+        <div class="absolute inset-0 opacity-20 pointer-events-none transition-opacity duration-700" id="brand-pattern">
+          <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0); background-size: 24px 24px;"></div>
+        </div>
+
+        <div class="relative z-10 space-y-6">
+          <div class="w-16 h-16 md:w-20 md:h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20 group-hover:scale-110 transition-transform duration-500" id="brand-icon-container">
+            <span class="material-symbols-outlined text-white text-4xl md:text-5xl transition-colors duration-700" id="brand-icon" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+          </div>
+
+          <h2 class="font-display-lg text-3xl md:text-4xl text-white leading-tight transition-colors duration-700" id="brand-headline">
+            INSTITUTIONAL ACCESS
+          </h2>
+
+          <p class="text-white/80 font-body-md max-w-xs mx-auto transition-colors duration-700" id="brand-subtext">
+            Authorized personnel only. Maintain credential integrity.
+          </p>
+
+          <div class="pt-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-black/5 border border-white/10 rounded-full text-white/60 font-caption uppercase tracking-widest transition-all duration-700" id="status-pill">
+              <span class="w-2 h-2 rounded-full bg-secondary animate-pulse" id="status-dot"></span>
+              <span id="status-text">KIP RAPORT</span>
+            </div>
+          </div>
+
+          <div class="mt-8 text-white/50 font-label-md uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-all duration-500" id="toggle-hint">
+            Click to Toggle View
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-form w-1/2 bg-white flex flex-col justify-center p-8 md:p-16" id="form-side">
+        <div class="max-w-sm w-full mx-auto space-y-8">
+          <div class="space-y-2">
+            <h1 class="font-headline-md text-3xl text-primary tracking-tight transition-colors duration-700" id="form-heading">
+              Access Portal
+            </h1>
+            <p class="text-sm text-on-surface-variant" id="form-message">
+              Sign in using your authorized account.
+            </p>
+          </div>
+
+          <form class="space-y-5" id="access-form">
+            <div class="space-y-1.5">
+              <label class="block font-label-md text-primary uppercase tracking-wider ml-1 transition-colors duration-700 form-label">
+                ID / USERNAME
+              </label>
+              <div class="relative group">
+                <input id="username" required class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-bright focus:ring-2 focus:ring-primary outline-none form-input transition-all" placeholder="Enter ID" type="text" autocomplete="username" />
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline-variant group-focus-within:text-primary transition-colors">badge</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block font-label-md text-primary uppercase tracking-wider ml-1 transition-colors duration-700 form-label">
+                PASSWORD
+              </label>
+              <div class="relative group">
+                <input id="password" required class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-bright focus:ring-2 focus:ring-primary outline-none form-input transition-all" placeholder="••••••••" type="password" autocomplete="current-password" />
+                <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors" aria-label="Show password">
+                  <span class="material-symbols-outlined">visibility</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between py-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input id="remember-me" class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary transition-colors" type="checkbox" checked />
+                <span class="font-caption text-on-surface-variant transition-colors duration-700" id="rem-text">Remember Me</span>
+              </label>
+
+              <a class="font-caption text-secondary font-bold hover:underline transition-colors duration-700" href="#" id="forgot-link">
+                Forgot Password?
+              </a>
+            </div>
+
+            <button type="submit" class="w-full py-4 bg-primary text-white rounded-xl font-bold hover:brightness-110 transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 disabled:opacity-60 disabled:cursor-not-allowed" id="submit-btn">
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const APP_CONFIG = {
+      API_URL: "https://script.google.com/macros/s/AKfycbySUl-1kc2_1xfabf5liEWAhrxZMJ6d95wgQMh1LJFjEzgVLHUfoDi88DO6kC-8Yow-WA/exec",
+
+      ROUTES: {
+        manager: "Dashboard.html",
+        trainer: "TrainerDashboard.html"
+      },
+
+      STORAGE_KEY: "kipPortalSession"
+    };
+
+    const SessionStore = {
+      get() {
+        const local = localStorage.getItem(APP_CONFIG.STORAGE_KEY);
+        const session = sessionStorage.getItem(APP_CONFIG.STORAGE_KEY);
+        const raw = local || session;
+
+        if (!raw) return null;
+
+        try {
+          const parsed = JSON.parse(raw);
+
+          if (!parsed.token || !parsed.user) {
+            this.clear();
+            return null;
+          }
+
+          if (parsed.expiresAt && Date.now() > parsed.expiresAt) {
+            this.clear();
+            return null;
+          }
+
+          return parsed;
+        } catch (err) {
+          this.clear();
+          return null;
+        }
+      },
+
+      set(session, remember) {
+        this.clear();
+
+        const storage = remember ? localStorage : sessionStorage;
+        storage.setItem(APP_CONFIG.STORAGE_KEY, JSON.stringify(session));
+      },
+
+      clear() {
+        localStorage.removeItem(APP_CONFIG.STORAGE_KEY);
+        sessionStorage.removeItem(APP_CONFIG.STORAGE_KEY);
+      }
+    };
+
+    async function apiRequest(action, data = {}, token = "") {
+      if (!APP_CONFIG.API_URL || APP_CONFIG.API_URL.includes("PASTE_YOUR_DEPLOYED")) {
+        throw new Error("API URL is not configured. Please paste your deployed Apps Script Web App URL.");
+      }
+
+      const response = await fetch(APP_CONFIG.API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action,
+          data,
+          token
+        }),
+        redirect: "follow"
+      });
+
+      const text = await response.text();
+
+      let json;
+      try {
+        json = JSON.parse(text);
+      } catch (err) {
+        throw new Error("Invalid API response. Check your Apps Script deployment URL and access settings.");
+      }
+
+      if (!json.success) {
+        throw new Error(json.message || "Request failed.");
+      }
+
+      return json;
+    }
+
+    function routeUser(user) {
+      const role = String(user?.role || "").toLowerCase();
+
+      if (role === "trainer") {
+        window.location.href = APP_CONFIG.ROUTES.trainer;
+        return;
+      }
+
+      window.location.href = APP_CONFIG.ROUTES.manager;
+    }
+
+    function showLoadingWorkspace() {
+      const container = document.getElementById("door-container");
+
+      container.innerHTML = `
+        <div class="w-full min-h-[600px] flex flex-col items-center justify-center bg-surface">
+          <span class="material-symbols-outlined text-5xl text-primary animate-spin mb-6">sync</span>
+          <h2 class="text-2xl text-primary font-bold tracking-tight">Loading Workspace</h2>
+          <p class="text-on-surface-variant mt-2">Authenticating secure session...</p>
+        </div>
+      `;
+    }
+
+    function setFormMessage(message, type = "info") {
+      const el = document.getElementById("form-message");
+
+      if (!el) return;
+
+      el.textContent = message;
+
+      if (type === "error") {
+        el.className = "text-sm text-secondary font-semibold";
+      } else if (type === "success") {
+        el.className = "text-sm text-green-700 font-semibold";
+      } else {
+        el.className = "text-sm text-on-surface-variant";
+      }
+    }
+
+    function setButtonLoading(isLoading, text = "Authorizing...") {
+      const btn = document.getElementById("submit-btn");
+
+      btn.disabled = isLoading;
+      btn.innerText = isLoading ? text : "Login";
+    }
+
+    async function autoLoginCheck() {
+      const session = SessionStore.get();
+
+      if (!session) return;
+
+      showLoadingWorkspace();
+
+      try {
+        const res = await apiRequest("me", {}, session.token);
+
+        SessionStore.set({
+          ...session,
+          user: res.user
+        }, Boolean(localStorage.getItem(APP_CONFIG.STORAGE_KEY)));
+
+        routeUser(res.user);
+      } catch (err) {
+        SessionStore.clear();
+        window.location.href = "index.html";
+      }
+    }
+
+    function setupSlidingDoor() {
+      const container = document.getElementById("door-container");
+      const brandingSide = document.getElementById("branding-side");
+
+      let isSwapped = false;
+
+      brandingSide.addEventListener("click", () => {
+        isSwapped = !isSwapped;
+        container.classList.toggle("state-swapped", isSwapped);
+
+        const updates = isSwapped
+          ? {
+              brandHead: "AUTHENTICATION",
+              brandColor: "#00003c",
+              subColor: "#464653",
+              iconBg: "rgba(0,0,60,0.05)",
+              iconBorder: "rgba(0,0,60,0.1)",
+              patternColor: "#00003c",
+              statusBg: "rgba(0,0,60,0.05)",
+              formHeadColor: "#ffffff",
+              btnBg: "#fe624e"
+            }
+          : {
+              brandHead: "INSTITUTIONAL ACCESS",
+              brandColor: "#ffffff",
+              subColor: "rgba(255,255,255,0.8)",
+              iconBg: "rgba(255,255,255,0.1)",
+              iconBorder: "rgba(255,255,255,0.2)",
+              patternColor: "white",
+              statusBg: "rgba(255,255,255,0.05)",
+              formHeadColor: "#00003c",
+              btnBg: "#00003c"
+            };
+
+        document.getElementById("brand-headline").innerText = updates.brandHead;
+        document.getElementById("brand-headline").style.color = updates.brandColor;
+        document.getElementById("brand-subtext").style.color = updates.subColor;
+        document.getElementById("brand-icon").style.color = updates.brandColor;
+        document.getElementById("brand-icon-container").style.backgroundColor = updates.iconBg;
+        document.getElementById("brand-icon-container").style.borderColor = updates.iconBorder;
+        document.getElementById("brand-pattern").style.color = updates.patternColor;
+        document.getElementById("status-pill").style.backgroundColor = updates.statusBg;
+        document.getElementById("status-pill").style.color = updates.subColor;
+
+        document.getElementById("form-heading").style.color = updates.formHeadColor;
+        document.getElementById("submit-btn").style.backgroundColor = updates.btnBg;
+        document.getElementById("rem-text").style.color = isSwapped ? "rgba(255,255,255,0.7)" : "#464653";
+        document.getElementById("forgot-link").style.color = isSwapped ? "#fe624e" : "#b22b1d";
+        document.getElementById("form-message").style.color = isSwapped ? "rgba(255,255,255,0.7)" : "";
+      });
+    }
+
+    function setupPasswordToggle() {
+      const btn = document.getElementById("toggle-password");
+      const input = document.getElementById("password");
+
+      btn.addEventListener("click", () => {
+        const isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        btn.innerHTML = `<span class="material-symbols-outlined">${isPassword ? "visibility_off" : "visibility"}</span>`;
+      });
+    }
+
+    function setupLoginForm() {
+      const form = document.getElementById("access-form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+        const remember = document.getElementById("remember-me").checked;
+
+        if (!username || !password) {
+          setFormMessage("Please enter your username and password.", "error");
+          return;
+        }
+
+        setButtonLoading(true);
+        setFormMessage("Checking credentials...");
+
+        try {
+          const res = await apiRequest("login", {
+            username,
+            password
+          });
+
+          const session = {
+            token: res.token,
+            user: res.user,
+            createdAt: Date.now(),
+            expiresAt: Date.now() + Number(res.expiresIn || 21600) * 1000
+          };
+
+          SessionStore.set(session, remember);
+
+          setButtonLoading(true, "Initializing Dashboard...");
+          setFormMessage("Login successful. Opening workspace...", "success");
+
+          routeUser(res.user);
+        } catch (err) {
+          setButtonLoading(false);
+          setFormMessage(err.message || "Access denied.", "error");
+        }
+      });
+    }
+
+    function setupNetworkStatus() {
+      const link = document.getElementById("network-status");
+
+      link.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const oldText = link.textContent;
+        link.textContent = "Checking...";
+
+        try {
+          await apiRequest("ping");
+          link.textContent = "API Online";
+          link.classList.remove("text-outline-variant");
+          link.classList.add("text-green-700");
+
+          setTimeout(() => {
+            link.textContent = oldText;
+            link.classList.add("text-outline-variant");
+            link.classList.remove("text-green-700");
+          }, 2500);
+        } catch (err) {
+          link.textContent = "API Offline";
+          link.classList.remove("text-outline-variant");
+          link.classList.add("text-secondary");
+
+          setTimeout(() => {
+            link.textContent = oldText;
+            link.classList.add("text-outline-variant");
+            link.classList.remove("text-secondary");
+          }, 3500);
+        }
+      });
+    }
+
+    function setupForgotPassword() {
+      document.getElementById("forgot-link").addEventListener("click", (e) => {
+        e.preventDefault();
+        setFormMessage("Please contact your Manager or System Admin to reset your password.", "error");
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setupSlidingDoor();
+      setupPasswordToggle();
+      setupLoginForm();
+      setupNetworkStatus();
+      setupForgotPassword();
+      autoLoginCheck();
+    });
+  </script>
+</body>
+</html>
