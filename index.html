@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>KIP Class Link Portal</title>
+
+  <style>
+    :root {
+      --primary: #1f4e79;
+      --primary-dark: #163955;
+      --primary-soft: #eaf3fb;
+      --accent: #f5b942;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --bg: #f3f6fb;
+      --white: #ffffff;
+      --shadow: 0 24px 60px rgba(15, 23, 42, 0.14);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(31, 78, 121, 0.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(245, 185, 66, 0.15), transparent 32%),
+        linear-gradient(135deg, #f3f6fb 0%, #eef4fb 48%, #ffffff 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .login-page {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .login-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(209, 213, 219, 0.85);
+      border-radius: var(--radius);
+      padding: 38px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+
+    .logo-box {
+      width: 68px;
+      height: 68px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(245, 185, 66, 0.32), transparent 42%),
+        var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: -0.6px;
+      box-shadow: 0 16px 28px rgba(31, 78, 121, 0.22);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .login-header h1 {
+      font-size: 29px;
+      line-height: 1.18;
+      letter-spacing: -0.7px;
+      margin-bottom: 9px;
+      color: var(--text);
+    }
+
+    .login-header p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .alert {
+      display: none;
+      padding: 13px 14px;
+      border-radius: 15px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .alert.error {
+      display: block;
+      color: #991b1b;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+    }
+
+    .alert.success {
+      display: block;
+      color: #166534;
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      color: var(--text);
+      border-radius: 15px;
+      padding: 14px 15px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(31, 78, 121, 0.12);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 72px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 11px;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 12px;
+      padding: 6px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 15px 18px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.68;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: var(--text);
+      border: 1px solid var(--border);
+      margin-top: 16px;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .footer-text {
+      margin-top: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .loading-screen {
+      display: none;
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(209, 213, 219, 0.85);
+      padding: 36px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      backdrop-filter: blur(14px);
+    }
+
+    .spinner {
+      width: 42px;
+      height: 42px;
+      border: 4px solid #dbeafe;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 18px;
+    }
+
+    .loading-screen h3 {
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .loading-screen p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 14px;
+        align-items: flex-start;
+      }
+
+      .login-card,
+      .loading-screen {
+        padding: 28px 22px;
+        border-radius: 20px;
+      }
+
+      .login-header h1 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="login-page" id="loginPage">
+    <section class="login-card">
+      <div class="logo-wrap">
+        <div class="logo-box">KIP</div>
+      </div>
+
+      <div class="login-header">
+        <h1>Class Link Portal</h1>
+        <p>Login using your Trainer or Manager account.</p>
+      </div>
+
+      <div id="alertBox" class="alert"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+
+          <div class="password-wrap">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+            <button type="button" class="toggle-password" id="togglePassword">
+              SHOW
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="loginButton">
+          <span id="buttonText">Login</span>
+        </button>
+      </form>
+
+      <div class="footer-text">
+        Kampung Inggris Pontianak
+      </div>
+    </section>
+  </main>
+
+  <section class="loading-screen" id="loadingScreen">
+    <div class="spinner" id="loadingSpinner"></div>
+
+    <h3 id="loadingTitle">Checking session</h3>
+    <p id="loadingText">Please wait while we verify your saved login.</p>
+
+    <button class="btn btn-secondary" id="backToLoginButton" type="button">
+      Back to Login
+    </button>
+  </section>
+
+  <script>
+    /****************************************************
+     * KIP CLASS LINK PORTAL - GITHUB READY LOGIN PAGE
+     *
+     * Works in two modes:
+     * 1. GAS hosted mode:
+     *    Uses google.script.run when available.
+     *
+     * 2. GitHub static mode:
+     *    Uses GAS Web App API bridge through JSONP.
+     *
+     * Required backend:
+     * Rewritten migration-ready Code.gs with api/action support.
+     ****************************************************/
+
+    const APP_NAME = 'KIP Class Link Portal';
+
+    /*
+     * For GitHub Pages:
+     * Paste your deployed GAS Web App /exec URL here.
+     *
+     * Example:
+     * const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxxxx/exec';
+     */
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzJKPNT8J6FVLyOSejHT8zPMM_u_zaQ-dfFNioFLpCd2ovxPLePNqwR-fmx2PWT5_uFJw/exec';
+
+    /*
+     * For GitHub migration:
+     * Set this to the dashboard page path.
+     *
+     * Same folder:
+     * Dashboard.html
+     *
+     * Or React route later:
+     * /dashboard
+     */
+    const DASHBOARD_URL = 'Dashboard.html';
+
+    const STORAGE_KEYS = {
+      TOKEN: 'kip_class_portal_token',
+      USER: 'kip_class_portal_user'
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.title = APP_NAME;
+      bindEvents();
+      checkSavedSession();
+    });
+
+    function bindEvents() {
+      document.getElementById('loginForm').addEventListener('submit', handleLogin);
+      document.getElementById('togglePassword').addEventListener('click', togglePassword);
+      document.getElementById('backToLoginButton').addEventListener('click', showLogin);
+    }
+
+    function checkSavedSession() {
+      const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+
+      if (!token) {
+        showLogin();
+        return;
+      }
+
+      showLoading('Checking session', 'Please wait while we verify your saved login.', true);
+
+      callBackend('getCurrentUser', { token: token })
+        .then(function (response) {
+          if (response && response.success && response.user) {
+            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user));
+            goToDashboard();
+            return;
+          }
+
+          clearSession();
+          showLogin();
+        })
+        .catch(function () {
+          clearSession();
+          showLogin();
+        });
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        showAlert('Please enter username and password.', 'error');
+        return;
+      }
+
+      setLoginLoading(true);
+      clearAlert();
+
+      callBackend('login', {
+        username: username,
+        password: password
+      })
+        .then(function (response) {
+          setLoginLoading(false);
+
+          if (!response || !response.success) {
+            showAlert(response && response.message ? response.message : 'Login failed.', 'error');
+            return;
+          }
+
+          localStorage.setItem(STORAGE_KEYS.TOKEN, response.token);
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user));
+
+          showAlert('Login successful. Opening dashboard...', 'success');
+
+          setTimeout(function () {
+            goToDashboard();
+          }, 350);
+        })
+        .catch(function (error) {
+          setLoginLoading(false);
+
+          const message = error && error.message
+            ? error.message
+            : 'Login failed. Please try again.';
+
+          showAlert(message, 'error');
+        });
+    }
+
+    function callBackend(action, payload) {
+      payload = payload || {};
+
+      if (
+        typeof google !== 'undefined' &&
+        google.script &&
+        google.script.run
+      ) {
+        return callGasRuntime(action, payload);
+      }
+
+      return callGasJsonp(action, payload);
+    }
+
+    function callGasRuntime(action, payload) {
+      return new Promise(function (resolve, reject) {
+        google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(reject)
+          .api(action, payload);
+      });
+    }
+
+    function callGasJsonp(action, payload) {
+      return new Promise(function (resolve, reject) {
+        const baseUrl = String(GAS_WEB_APP_URL || '').trim();
+
+        if (!baseUrl || baseUrl.indexOf('script.google.com') === -1) {
+          reject(new Error('GAS Web App URL is not configured.'));
+          return;
+        }
+
+        const callbackName = 'kipApiCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        const script = document.createElement('script');
+
+        const timeout = setTimeout(function () {
+          cleanup();
+          reject(new Error('Request timeout. Please try again.'));
+        }, 30000);
+
+        window[callbackName] = function (response) {
+          cleanup();
+          resolve(response);
+        };
+
+        function cleanup() {
+          clearTimeout(timeout);
+
+          try {
+            delete window[callbackName];
+          } catch (err) {
+            window[callbackName] = undefined;
+          }
+
+          if (script && script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        }
+
+        script.onerror = function () {
+          cleanup();
+          reject(new Error('Failed to connect to GAS backend.'));
+        };
+
+        const query = [
+          'action=' + encodeURIComponent(action),
+          'callback=' + encodeURIComponent(callbackName),
+          'payload=' + encodeURIComponent(JSON.stringify(payload))
+        ].join('&');
+
+        script.src = baseUrl.split('?')[0] + '?' + query;
+
+        document.body.appendChild(script);
+      });
+    }
+
+    function goToDashboard() {
+      window.location.href = DASHBOARD_URL;
+    }
+
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleButton = document.getElementById('togglePassword');
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleButton.textContent = 'HIDE';
+      } else {
+        passwordInput.type = 'password';
+        toggleButton.textContent = 'SHOW';
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('loginPage').style.display = 'block';
+      clearAlert();
+    }
+
+    function showLoading(title, text, showSpinner) {
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('loadingScreen').style.display = 'block';
+
+      document.getElementById('loadingTitle').textContent = title || 'Loading';
+      document.getElementById('loadingText').textContent = text || 'Please wait.';
+
+      document.getElementById('loadingSpinner').style.display = showSpinner ? 'block' : 'none';
+    }
+
+    function setLoginLoading(isLoading) {
+      const button = document.getElementById('loginButton');
+      const buttonText = document.getElementById('buttonText');
+
+      button.disabled = isLoading;
+      buttonText.textContent = isLoading ? 'Logging in...' : 'Login';
+    }
+
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+
+      alertBox.textContent = message;
+      alertBox.className = 'alert ' + type;
+    }
+
+    function clearAlert() {
+      const alertBox = document.getElementById('alertBox');
+
+      alertBox.textContent = '';
+      alertBox.className = 'alert';
+    }
+
+    function clearSession() {
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
+    }
+  </script>
+</body>
+</html>
