@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>KIP Class Link Portal</title>
+
+  <style>
+    :root {
+      --primary: #1f4e79;
+      --primary-dark: #163955;
+      --primary-soft: #eaf3fb;
+      --accent: #f5b942;
+      --bg: #f3f6fb;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --danger: #dc2626;
+      --danger-soft: #fee2e2;
+      --success: #16a34a;
+      --success-soft: #dcfce7;
+      --warning: #f59e0b;
+      --warning-soft: #fef3c7;
+      --shadow: 0 16px 35px rgba(15, 23, 42, 0.10);
+      --shadow-strong: 0 24px 60px rgba(15, 23, 42, 0.16);
+      --radius: 18px;
+    }
+
+    [data-theme="dark"] {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      --primary-soft: #172554;
+      --accent: #facc15;
+      --bg: #0f172a;
+      --surface: #111827;
+      --surface-2: #1f2937;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #374151;
+      --danger: #f87171;
+      --danger-soft: #451a1a;
+      --success: #4ade80;
+      --success-soft: #14532d;
+      --warning: #facc15;
+      --warning-soft: #422006;
+      --shadow: 0 16px 35px rgba(0, 0, 0, 0.30);
+      --shadow-strong: 0 24px 60px rgba(0, 0, 0, 0.40);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(31, 78, 121, 0.10), transparent 28%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .loading-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--bg);
+    }
+
+    .loading-card {
+      width: 100%;
+      max-width: 460px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 34px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 4px solid var(--primary-soft);
+      border-top-color: var(--primary);
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 18px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-card h3 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .loading-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    [data-theme="dark"] .topbar {
+      background: rgba(17, 24, 39, 0.88);
+    }
+
+    .topbar-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .brand-title h1 {
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .brand-title p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .role-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 13px;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: 0.18s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-soft {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid rgba(220, 38, 38, 0.22);
+    }
+
+    .btn-success {
+      background: var(--success-soft);
+      color: var(--success);
+      border: 1px solid rgba(22, 163, 74, 0.22);
+    }
+
+    .btn-warning {
+      background: var(--warning-soft);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 22px 44px;
+    }
+
+    .screen {
+      animation: fadeSlide 0.22s ease;
+    }
+
+    .screen.hidden {
+      display: none;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at top right, rgba(245, 185, 66, 0.15), transparent 30%),
+        linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #ffffff;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .hero h2 {
+      font-size: 30px;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .stat-card span {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-title h3 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      min-width: 260px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 13px;
+      padding: 10px 13px;
+      outline: none;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .branch-grid {
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      margin-bottom: 28px;
+    }
+
+    .class-grid {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .branch-card {
+      cursor: pointer;
+      transition: 0.18s ease;
+      position: relative;
+      overflow: hidden;
+      min-height: 180px;
+      padding: 24px;
+    }
+
+    .branch-card:hover,
+    .branch-card.active {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-strong);
+    }
+
+    .branch-card.locked {
+      cursor: not-allowed;
+      opacity: 0.62;
+    }
+
+    .branch-card.locked:hover {
+      transform: none;
+      border-color: var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .branch-card::after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      right: -34px;
+      top: -34px;
+      opacity: 0.9;
+    }
+
+    .branch-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .branch-access-note {
+      margin-top: 16px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+      position: relative;
+      z-index: 2;
+    }
+
+    .branch-access-note.allowed {
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .branch-access-note.locked-text {
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-title {
+      font-size: 17px;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .branch-card .card-title {
+      font-size: 20px;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .badge-small {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .class-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: 0.18s ease;
+    }
+
+    .class-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-strong);
+      border-color: var(--primary);
+    }
+
+    .class-top-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .info-row span:first-child {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .info-row span:last-child {
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .card-actions.three {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .empty {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    .manager-panel {
+      display: none;
+      margin-top: 28px;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .panel-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-card h3 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .panel-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      max-height: 280px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .list-item {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--surface-2);
+    }
+
+    .list-item strong {
+      font-size: 13px;
+    }
+
+    .list-item span {
+      font-size: 12px;
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.58);
+      z-index: 100;
+      padding: 18px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 720px;
+      max-height: 92vh;
+      overflow: auto;
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.30);
+    }
+
+    .modal-header {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 2;
+    }
+
+    .modal-header h3 {
+      font-size: 19px;
+    }
+
+    .modal-body {
+      padding: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      border-radius: 13px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(31, 78, 121, 0.13);
+    }
+
+    .modal-footer {
+      padding: 18px 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: var(--surface);
+      position: sticky;
+      bottom: 0;
+    }
+
+    .alert {
+      display: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert.error {
+      color: #991b1b;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+    }
+
+    .alert.success {
+      color: #166534;
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+    }
+
+    [data-theme="dark"] .alert.error {
+      color: #fecaca;
+      background: #451a1a;
+      border-color: #7f1d1d;
+    }
+
+    [data-theme="dark"] .alert.success {
+      color: #bbf7d0;
+      background: #14532d;
+      border-color: #166534;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 200;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 13px 15px;
+      box-shadow: var(--shadow);
+      display: none;
+      max-width: 360px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .confirm-modal {
+      width: 100%;
+      max-width: 430px;
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 26px;
+      border: 1px solid var(--border);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
+      padding: 28px;
+      text-align: center;
+      animation: confirmPop 0.22s ease;
+    }
+
+    @keyframes confirmPop {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .confirm-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top right, rgba(245, 185, 66, 0.30), transparent 42%),
+        var(--danger-soft);
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .confirm-modal h3 {
+      font-size: 22px;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .confirm-modal p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .confirm-actions .btn {
+      width: 100%;
+      padding: 13px 14px;
+    }
+
+    @media (max-width: 880px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero {
+        padding: 22px;
+      }
+
+      .hero h2 {
+        font-size: 24px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .toolbar-actions {
+        width: 100%;
+      }
+
+      .toolbar-actions .btn,
+      .search-box {
+        width: 100%;
+      }
+
+      .card-actions,
+      .card-actions.three {
+        grid-template-columns: 1fr;
+      }
+
+      .info-row {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .modal-footer {
+        flex-direction: column-reverse;
+      }
+
+      .modal-footer .btn {
+        width: 100%;
+      }
+
+      .confirm-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="loading-page" id="loadingPage">
+    <div class="loading-card">
+      <div class="spinner" id="loadingSpinner"></div>
+
+      <h3 id="loadingTitle">Loading dashboard</h3>
+      <p id="loadingText">Please wait while we prepare your branch and class data.</p>
+
+      <button class="btn btn-primary" id="backToLoginButton" type="button">
+        Back to Login
+      </button>
+    </div>
+  </section>
+
+  <section class="app" id="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="logo">KIP</div>
+
+          <div class="brand-title">
+            <h1>Class Link Portal</h1>
+            <p id="branchInfoText">Branch and class management</p>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="user-pill">
+            <span class="role-dot"></span>
+            <span id="userLabel">User</span>
+          </div>
+
+          <button class="btn btn-soft" id="themeButton" type="button">
+            Dark Mode
+          </button>
+
+          <button class="btn btn-soft manager-only" id="settingsButton" type="button">
+            Settings
+          </button>
+
+          <button class="btn btn-soft" id="refreshButton" type="button">
+            Refresh
+          </button>
+
+          <button class="btn btn-danger" id="logoutButton" type="button">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="screen" id="branchScreen">
+        <section class="hero">
+          <div>
+            <h2 id="heroTitle">Welcome back</h2>
+            <p id="heroDescription">
+              Choose a branch first. The branch page will transition into the class grid after selection.
+            </p>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-card">
+              <strong id="branchCount">0</strong>
+              <span>Branches</span>
+            </div>
+
+            <div class="stat-card">
+              <strong id="classCount">0</strong>
+              <span>Classes</span>
+            </div>
+
+            <div class="stat-card">
+              <strong id="linkCount">0</strong>
+              <span>Links</span>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="toolbar">
+            <div class="section-title">
+              <h3>Branches</h3>
+              <p id="branchSectionDesc">Choose a branch to open its class grid.</p>
+            </div>
+
+            <div class="toolbar-actions">
+              <input class="search-box" id="branchSearch" type="text" placeholder="Search branch...">
+
+              <button class="btn btn-primary manager-only" id="addBranchButton" type="button">
+                Add Branch
+              </button>
+            </div>
+          </div>
+
+          <div class="grid branch-grid" id="branchGrid"></div>
+        </section>
+      </section>
+
+      <section class="screen hidden" id="classScreen">
+        <section class="hero">
+          <div>
+            <h2 id="classHeroTitle">Classes</h2>
+            <p id="classHeroDescription">
+              Manage class information, trainer details, and class links.
+            </p>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-card">
+              <strong id="selectedBranchClassCount">0</strong>
+              <span>Classes</span>
+            </div>
+
+            <div class="stat-card">
+              <strong id="selectedBranchLinkCount">0</strong>
+              <span>Links</span>
+            </div>
+
+            <div class="stat-card">
+              <strong id="selectedBranchCode">-</strong>
+              <span>Branch ID</span>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="toolbar">
+            <div class="section-title">
+              <h3 id="classSectionTitle">Classes</h3>
+              <p id="classSectionDesc">Selected branch classes will be displayed here.</p>
+            </div>
+
+            <div class="toolbar-actions">
+              <button class="btn btn-soft" id="backToBranchesButton" type="button">
+                Back to Branches
+              </button>
+
+              <input class="search-box" id="classSearch" type="text" placeholder="Search class...">
+
+              <button class="btn btn-primary" id="addClassButton" type="button">
+                Add Class
+              </button>
+            </div>
+          </div>
+
+          <div class="grid class-grid" id="classGrid"></div>
+        </section>
+      </section>
+
+      <section class="manager-panel manager-only" id="managerPanel">
+        <div class="toolbar">
+          <div class="section-title">
+            <h3>Settings</h3>
+            <p>Manage dropdown source data for Schedule and Period.</p>
+          </div>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel-card">
+            <h3>Schedule Options</h3>
+            <p>These values appear in the Schedule dropdown when creating or editing a class.</p>
+
+            <div class="toolbar-actions" style="margin-bottom: 14px;">
+              <button class="btn btn-primary" type="button" id="addScheduleButton">
+                Add Schedule
+              </button>
+            </div>
+
+            <div class="list" id="scheduleList"></div>
+          </div>
+
+          <div class="panel-card">
+            <h3>Period Options</h3>
+            <p>These values appear in the Period dropdown when creating or editing a class.</p>
+
+            <div class="toolbar-actions" style="margin-bottom: 14px;">
+              <button class="btn btn-primary" type="button" id="addPeriodButton">
+                Add Period
+              </button>
+            </div>
+
+            <div class="list" id="periodList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <div class="modal-backdrop" id="classModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="classModalTitle">Add Class</h3>
+        <button class="btn btn-soft" type="button" data-close-modal="classModal">Close</button>
+      </div>
+
+      <form id="classForm">
+        <div class="modal-body">
+          <div class="alert" id="classAlert"></div>
+
+          <input type="hidden" id="classId">
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="classBranch">Branch</label>
+              <select id="classBranch" required></select>
+            </div>
+
+            <div class="form-group">
+              <label for="className">Class Name</label>
+              <input type="text" id="className" placeholder="Example: Basic Speaking A" required>
+            </div>
+
+            <div class="form-group">
+              <label for="classLevel">Level</label>
+              <input type="text" id="classLevel" placeholder="Example: Basic / Pre-Intermediate">
+            </div>
+
+            <div class="form-group">
+              <label for="classSchedule">Schedule</label>
+              <select id="classSchedule" required></select>
+            </div>
+
+            <div class="form-group">
+              <label for="classPeriod">Period</label>
+              <select id="classPeriod" required></select>
+            </div>
+
+            <div class="form-group">
+              <label for="trainerName">Trainer Name</label>
+              <input type="text" id="trainerName" placeholder="Trainer name">
+            </div>
+
+            <div class="form-group">
+              <label for="trainerPhone">Trainer Phone</label>
+              <input type="text" id="trainerPhone" placeholder="08xxxxxxxxxx">
+            </div>
+
+            <div class="form-group">
+              <label for="trainerEmail">Trainer Email</label>
+              <input type="email" id="trainerEmail" placeholder="trainer@example.com">
+            </div>
+
+            <div class="form-group full">
+              <label for="driveLink">Drive Link</label>
+              <input type="url" id="driveLink" placeholder="https://drive.google.com/...">
+            </div>
+
+            <div class="form-group full">
+              <label for="classNotes">Notes</label>
+              <textarea id="classNotes" placeholder="Optional class notes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-soft" type="button" data-close-modal="classModal">Cancel</button>
+          <button class="btn btn-primary" id="saveClassButton" type="submit">Save Class</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="branchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="branchModalTitle">Add Branch</h3>
+        <button class="btn btn-soft" type="button" data-close-modal="branchModal">Close</button>
+      </div>
+
+      <form id="branchForm">
+        <div class="modal-body">
+          <div class="alert" id="branchAlert"></div>
+
+          <input type="hidden" id="branchId">
+
+          <div class="form-group">
+            <label for="branchName">Branch Name</label>
+            <input type="text" id="branchName" placeholder="Example: KIP Pontianak Barat" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-soft" type="button" data-close-modal="branchModal">Cancel</button>
+          <button class="btn btn-primary" id="saveBranchButton" type="submit">Save Branch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="settingModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="settingModalTitle">Add Setting</h3>
+        <button class="btn btn-soft" type="button" data-close-modal="settingModal">Close</button>
+      </div>
+
+      <form id="settingForm">
+        <div class="modal-body">
+          <div class="alert" id="settingAlert"></div>
+
+          <input type="hidden" id="settingId">
+
+          <div class="form-group">
+            <label for="settingType">Type</label>
+            <select id="settingType" required>
+              <option value="Schedule">Schedule</option>
+              <option value="Period">Period</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="settingValue">Value</label>
+            <input type="text" id="settingValue" placeholder="Example: Monday & Wednesday" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-soft" type="button" data-close-modal="settingModal">Cancel</button>
+          <button class="btn btn-primary" id="saveSettingButton" type="submit">Save Setting</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="logoutConfirmModal">
+    <div class="confirm-modal">
+      <div class="confirm-icon">!</div>
+
+      <h3>Logout from Portal?</h3>
+
+      <p>
+        Your current session on this device will be ended. You can login again anytime using your Trainer or Manager account.
+      </p>
+
+      <div class="confirm-actions">
+        <button class="btn btn-soft" type="button" id="cancelLogoutButton">
+          Stay Logged In
+        </button>
+
+        <button class="btn btn-danger" type="button" id="confirmLogoutButton">
+          Yes, Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /****************************************************
+     * KIP CLASS LINK PORTAL - GITHUB READY DASHBOARD
+     *
+     * Works in two modes:
+     * 1. GAS hosted mode:
+     *    Uses google.script.run when available.
+     *
+     * 2. GitHub static mode:
+     *    Uses GAS Web App API bridge through JSONP.
+     *
+     * Required backend:
+     * Rewritten migration-ready Code.gs with api/action support.
+     ****************************************************/
+
+    const APP_NAME = 'KIP Class Link Portal';
+
+    /*
+     * For GitHub Pages:
+     * Paste your deployed GAS Web App /exec URL here.
+     *
+     * Example:
+     * const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxxxx/exec';
+     */
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzJKPNT8J6FVLyOSejHT8zPMM_u_zaQ-dfFNioFLpCd2ovxPLePNqwR-fmx2PWT5_uFJw/exec';
+
+    /*
+     * For GitHub migration:
+     * Set this to the login page path.
+     *
+     * Same folder:
+     * Index.html
+     *
+     * Or React route later:
+     * /
+     */
+    const LOGIN_URL = 'Index.html';
+
+    const STORAGE_KEYS = {
+      TOKEN: 'kip_class_portal_token',
+      USER: 'kip_class_portal_user',
+      THEME: 'kip_class_portal_theme'
+    };
+
+    const state = {
+      token: '',
+      user: null,
+      branches: [],
+      classes: [],
+      settings: [],
+      settingOptions: {
+        schedules: [],
+        periods: []
+      },
+      selectedBranchId: '',
+      currentScreen: 'branches',
+      branchSearch: '',
+      classSearch: ''
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.title = APP_NAME;
+      initTheme();
+      bindEvents();
+      bootDashboard();
+    });
+
+    function bindEvents() {
+      document.getElementById('backToLoginButton').addEventListener('click', goToLogin);
+      document.getElementById('logoutButton').addEventListener('click', openLogoutConfirm);
+      document.getElementById('cancelLogoutButton').addEventListener('click', closeLogoutConfirm);
+      document.getElementById('confirmLogoutButton').addEventListener('click', executeLogout);
+      document.getElementById('themeButton').addEventListener('click', toggleTheme);
+
+      document.getElementById('refreshButton').addEventListener('click', function () {
+        reloadData({ message: 'Dashboard refreshed.' });
+      });
+
+      document.getElementById('settingsButton').addEventListener('click', function () {
+        toggleManagerSettings();
+      });
+
+      document.getElementById('backToBranchesButton').addEventListener('click', function () {
+        showBranchScreen();
+      });
+
+      document.getElementById('addClassButton').addEventListener('click', function () {
+        openClassModal('');
+      });
+
+      document.getElementById('addBranchButton').addEventListener('click', function () {
+        openBranchModal('');
+      });
+
+      document.getElementById('addScheduleButton').addEventListener('click', function () {
+        openSettingModal('Schedule', '');
+      });
+
+      document.getElementById('addPeriodButton').addEventListener('click', function () {
+        openSettingModal('Period', '');
+      });
+
+      document.getElementById('classForm').addEventListener('submit', handleSaveClass);
+      document.getElementById('branchForm').addEventListener('submit', handleSaveBranch);
+      document.getElementById('settingForm').addEventListener('submit', handleSaveSetting);
+
+      document.getElementById('branchSearch').addEventListener('input', function (event) {
+        state.branchSearch = event.target.value.trim().toLowerCase();
+        renderBranches();
+      });
+
+      document.getElementById('classSearch').addEventListener('input', function (event) {
+        state.classSearch = event.target.value.trim().toLowerCase();
+        renderClasses();
+      });
+
+      document.querySelectorAll('[data-close-modal]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          closeModal(button.getAttribute('data-close-modal'));
+        });
+      });
+
+      document.getElementById('logoutConfirmModal').addEventListener('click', function (event) {
+        if (event.target.id === 'logoutConfirmModal') {
+          closeLogoutConfirm();
+        }
+      });
+    }
+
+    function bootDashboard() {
+      const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+
+      if (!token) {
+        showLoadingError('No saved login session was found. Please return to login.');
+        return;
+      }
+
+      state.token = token;
+
+      callBackend('getAppData', { token: state.token })
+        .then(function (response) {
+          if (!response || !response.success) {
+            clearSession();
+            showLoadingError(response && response.message ? response.message : 'Dashboard data failed to load.');
+            return;
+          }
+
+          applyResponseData(response);
+
+          state.selectedBranchId = '';
+          state.currentScreen = 'branches';
+
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(state.user));
+
+          showApp();
+          renderAll();
+          showBranchScreen();
+        })
+        .catch(function (error) {
+          clearSession();
+          showLoadingError(error && error.message ? error.message : 'Failed to load dashboard. Please login again.');
+        });
+    }
+
+    function reloadData(options) {
+      options = options || {};
+
+      callBackend('getAppData', { token: state.token })
+        .then(function (response) {
+          if (!response || !response.success) {
+            showToast(response && response.message ? response.message : 'Failed to reload data.');
+            return;
+          }
+
+          applyResponseData(response);
+          fixSelectedBranch();
+          renderAll();
+
+          if (state.currentScreen === 'classes' && state.selectedBranchId) {
+            showClassScreen(false);
+          } else if (state.currentScreen === 'settings') {
+            toggleManagerSettings();
+          } else {
+            showBranchScreen(false);
+          }
+
+          if (options.message) {
+            showToast(options.message);
+          }
+        })
+        .catch(function (error) {
+          showToast(error && error.message ? error.message : 'Failed to reload data.');
+        });
+    }
+
+    function applyResponseData(response) {
+      state.user = response.user || null;
+      state.branches = Array.isArray(response.branches) ? response.branches : [];
+      state.classes = Array.isArray(response.classes) ? response.classes : [];
+      state.settings = Array.isArray(response.settings) ? response.settings : [];
+      state.settingOptions = response.settingOptions || { schedules: [], periods: [] };
+
+      if (!Array.isArray(state.settingOptions.schedules)) {
+        state.settingOptions.schedules = [];
+      }
+
+      if (!Array.isArray(state.settingOptions.periods)) {
+        state.settingOptions.periods = [];
+      }
+    }
+
+    function fixSelectedBranch() {
+      if (!state.selectedBranchId) return;
+
+      const exists = state.branches.some(function (branch) {
+        return branch.BranchID === state.selectedBranchId;
+      });
+
+      if (!exists) {
+        state.selectedBranchId = '';
+        state.currentScreen = 'branches';
+      }
+    }
+
+    function showApp() {
+      document.getElementById('loadingPage').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+    }
+
+    function showLoadingError(message) {
+      document.getElementById('loadingPage').style.display = 'flex';
+      document.getElementById('app').style.display = 'none';
+
+      document.getElementById('loadingSpinner').style.display = 'none';
+      document.getElementById('loadingTitle').textContent = 'Dashboard could not open';
+      document.getElementById('loadingText').textContent = message || 'Please return to login and try again.';
+    }
+
+    function showBranchScreen(scrollTop) {
+      state.currentScreen = 'branches';
+
+      document.getElementById('branchScreen').classList.remove('hidden');
+      document.getElementById('classScreen').classList.add('hidden');
+
+      document.getElementById('managerPanel').style.display = 'none';
+
+      renderHeader();
+      renderStats();
+      renderBranches();
+
+      if (scrollTop !== false) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function showClassScreen(scrollTop) {
+      state.currentScreen = 'classes';
+
+      document.getElementById('branchScreen').classList.add('hidden');
+      document.getElementById('classScreen').classList.remove('hidden');
+
+      document.getElementById('managerPanel').style.display = 'none';
+
+      renderHeader();
+      renderSelectedBranchStats();
+      renderClasses();
+
+      if (scrollTop !== false) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function renderAll() {
+      applyRoleDisplay();
+      renderHeader();
+      renderStats();
+      renderBranches();
+      renderSelectedBranchStats();
+      renderClasses();
+      renderSettingsPanel();
+      fillClassDropdowns();
+    }
+
+    function applyRoleDisplay() {
+      const isManager = state.user && state.user.role === 'Manager';
+      const managerOnlyElements = document.querySelectorAll('.manager-only');
+
+      managerOnlyElements.forEach(function (element) {
+        element.style.display = isManager ? '' : 'none';
+      });
+
+      document.getElementById('managerPanel').style.display = 'none';
+
+      const branchSelect = document.getElementById('classBranch');
+
+      if (branchSelect) {
+        branchSelect.disabled = !isManager;
+      }
+    }
+
+    function renderHeader() {
+      const user = state.user || {};
+      const name = user.fullName || user.username || 'User';
+      const role = user.role || '';
+
+      document.getElementById('userLabel').textContent = name + ' · ' + role;
+
+      document.getElementById('branchInfoText').textContent = role === 'Manager'
+        ? 'Manager access · All branches'
+        : 'Trainer access · Assigned branch: ' + (user.branchId || '-');
+
+      document.getElementById('heroTitle').textContent = 'Welcome, ' + name;
+
+      document.getElementById('heroDescription').textContent = role === 'Manager'
+        ? 'Choose any branch to open its class grid. Settings are available from the header.'
+        : 'All branches are visible, but only your assigned branch can be opened.';
+
+      document.getElementById('branchSectionDesc').textContent = role === 'Manager'
+        ? 'Choose any branch to open and manage its class grid.'
+        : 'All branches are visible. Only your assigned branch is clickable.';
+    }
+
+    function renderStats() {
+      const linkCount = state.classes.filter(function (item) {
+        return String(item.DriveLink || '').trim();
+      }).length;
+
+      document.getElementById('branchCount').textContent = state.branches.length;
+      document.getElementById('classCount').textContent = state.classes.length;
+      document.getElementById('linkCount').textContent = linkCount;
+    }
+
+    function renderSelectedBranchStats() {
+      const selectedBranch = getSelectedBranch();
+      const classes = getSelectedBranchClasses();
+      const linkCount = classes.filter(function (item) {
+        return String(item.DriveLink || '').trim();
+      }).length;
+
+      document.getElementById('selectedBranchClassCount').textContent = classes.length;
+      document.getElementById('selectedBranchLinkCount').textContent = linkCount;
+      document.getElementById('selectedBranchCode').textContent = selectedBranch ? selectedBranch.BranchID : '-';
+
+      document.getElementById('classHeroTitle').textContent = selectedBranch
+        ? selectedBranch.BranchName
+        : 'Classes';
+
+      document.getElementById('classHeroDescription').textContent = selectedBranch
+        ? 'Manage classes and class links for ' + selectedBranch.BranchName + '.'
+        : 'Select a branch first to display classes.';
+
+      document.getElementById('classSectionTitle').textContent = selectedBranch
+        ? 'Classes · ' + selectedBranch.BranchName
+        : 'Classes';
+
+      document.getElementById('classSectionDesc').textContent = selectedBranch
+        ? 'Showing classes from ' + selectedBranch.BranchName + '.'
+        : 'Select a branch first to display classes.';
+    }
+
+    function renderBranches() {
+      const grid = document.getElementById('branchGrid');
+      grid.innerHTML = '';
+
+      let branches = state.branches.slice();
+
+      if (state.branchSearch) {
+        branches = branches.filter(function (branch) {
+          return String(branch.BranchName || '').toLowerCase().includes(state.branchSearch) ||
+            String(branch.BranchID || '').toLowerCase().includes(state.branchSearch);
+        });
+      }
+
+      if (branches.length === 0) {
+        grid.innerHTML = '<div class="empty">No branch found.</div>';
+        return;
+      }
+
+      branches.forEach(function (branch) {
+        const isManager = state.user && state.user.role === 'Manager';
+        const isAssignedBranch = state.user && branch.BranchID === state.user.branchId;
+        const canOpenBranch = isManager || isAssignedBranch;
+
+        const classTotal = state.classes.filter(function (item) {
+          return item.BranchID === branch.BranchID;
+        }).length;
+
+        const card = document.createElement('div');
+
+        card.className = 'card branch-card' + (!canOpenBranch ? ' locked' : '');
+
+        if (canOpenBranch) {
+          card.addEventListener('click', function () {
+            state.selectedBranchId = branch.BranchID;
+            state.classSearch = '';
+            document.getElementById('classSearch').value = '';
+            showClassScreen();
+          });
+        }
+
+        const accessText = isManager
+          ? 'Manager access · Click to open this branch'
+          : isAssignedBranch
+            ? 'Your assigned branch · Click to open classes'
+            : 'Locked · You can only open your assigned branch';
+
+        const accessClass = canOpenBranch ? 'allowed' : 'locked-text';
+
+        const actions = isManager
+          ? `
+            <div class="card-actions" style="margin-top: 16px; position: relative; z-index: 2;">
+              <button class="btn btn-soft" type="button" data-action="edit-branch" data-id="${escapeAttr(branch.BranchID)}">Edit</button>
+              <button class="btn btn-danger" type="button" data-action="delete-branch" data-id="${escapeAttr(branch.BranchID)}">Delete</button>
+            </div>
+          `
+          : '';
+
+        card.innerHTML = `
+          <div class="branch-icon">BR</div>
+
+          <div class="card-head">
+            <div>
+              <h4 class="card-title">${escapeHtml(branch.BranchName)}</h4>
+              <p class="card-subtitle">${escapeHtml(branch.BranchID)}</p>
+            </div>
+
+            <span class="badge-small">${isManager ? classTotal + ' Classes' : isAssignedBranch ? classTotal + ' Classes' : 'Locked'}</span>
+          </div>
+
+          <div class="branch-access-note ${accessClass}">
+            ${escapeHtml(accessText)}
+          </div>
+
+          ${actions}
+        `;
+
+        grid.appendChild(card);
+      });
+
+      grid.querySelectorAll('[data-action="edit-branch"]').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          openBranchModal(button.getAttribute('data-id'));
+        });
+      });
+
+      grid.querySelectorAll('[data-action="delete-branch"]').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+          confirmDeleteBranch(button.getAttribute('data-id'));
+        });
+      });
+    }
+
+    function renderClasses() {
+      const grid = document.getElementById('classGrid');
+      grid.innerHTML = '';
+
+      renderSelectedBranchStats();
+
+      if (!state.selectedBranchId) {
+        grid.innerHTML = '<div class="empty">Please select a branch first.</div>';
+        return;
+      }
+
+      let classes = getSelectedBranchClasses();
+
+      if (state.classSearch) {
+        classes = classes.filter(function (item) {
+          const searchText = [
+            item.ClassName,
+            item.Level,
+            item.Schedule,
+            item.Period,
+            item.TrainerName,
+            item.TrainerPhone,
+            item.TrainerEmail,
+            item.Notes
+          ].join(' ').toLowerCase();
+
+          return searchText.includes(state.classSearch);
+        });
+      }
+
+      if (classes.length === 0) {
+        grid.innerHTML = '<div class="empty">No class found in this branch.</div>';
+        return;
+      }
+
+      classes.forEach(function (cls) {
+        const hasLink = String(cls.DriveLink || '').trim();
+        const card = document.createElement('div');
+
+        card.className = 'card class-card';
+
+        card.innerHTML = `
+          <div class="card-head">
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div class="class-top-icon">CL</div>
+
+              <div>
+                <h4 class="card-title">${escapeHtml(cls.ClassName)}</h4>
+                <p class="card-subtitle">${escapeHtml(cls.ClassID)} · ${escapeHtml(cls.BranchID)}</p>
+              </div>
+            </div>
+
+            <span class="badge-small">${escapeHtml(cls.Level || 'No Level')}</span>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <span>Schedule</span>
+              <span>${escapeHtml(cls.Schedule || '-')}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Period</span>
+              <span>${escapeHtml(cls.Period || '-')}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Trainer</span>
+              <span>${escapeHtml(cls.TrainerName || '-')}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Phone</span>
+              <span>${escapeHtml(cls.TrainerPhone || '-')}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Email</span>
+              <span>${escapeHtml(cls.TrainerEmail || '-')}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Notes</span>
+              <span>${escapeHtml(cls.Notes || '-')}</span>
+            </div>
+          </div>
+
+          <div class="card-actions three">
+            <button class="btn ${hasLink ? 'btn-success' : 'btn-soft'}" type="button" ${hasLink ? '' : 'disabled'} data-action="open-link" data-link="${escapeAttr(cls.DriveLink || '')}">
+              Open Link
+            </button>
+
+            <button class="btn btn-soft" type="button" data-action="edit-class" data-id="${escapeAttr(cls.ClassID)}">
+              Edit
+            </button>
+
+            <button class="btn btn-danger" type="button" data-action="delete-class" data-id="${escapeAttr(cls.ClassID)}">
+              Delete
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      grid.querySelectorAll('[data-action="open-link"]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          openDriveLink(button.getAttribute('data-link'));
+        });
+      });
+
+      grid.querySelectorAll('[data-action="edit-class"]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          openClassModal(button.getAttribute('data-id'));
+        });
+      });
+
+      grid.querySelectorAll('[data-action="delete-class"]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          confirmDeleteClass(button.getAttribute('data-id'));
+        });
+      });
+    }
+
+    function toggleManagerSettings() {
+      if (!state.user || state.user.role !== 'Manager') return;
+
+      const panel = document.getElementById('managerPanel');
+      const isVisible = panel.style.display === 'block';
+
+      panel.style.display = isVisible ? 'none' : 'block';
+
+      if (!isVisible) {
+        state.currentScreen = 'settings';
+        document.getElementById('branchScreen').classList.add('hidden');
+        document.getElementById('classScreen').classList.add('hidden');
+
+        panel.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } else {
+        showBranchScreen();
+      }
+    }
+
+    function renderSettingsPanel() {
+      if (!state.user || state.user.role !== 'Manager') return;
+
+      const scheduleList = document.getElementById('scheduleList');
+      const periodList = document.getElementById('periodList');
+
+      const schedules = state.settings.filter(function (item) {
+        return String(item.Type || '').toLowerCase() === 'schedule';
+      });
+
+      const periods = state.settings.filter(function (item) {
+        return String(item.Type || '').toLowerCase() === 'period';
+      });
+
+      scheduleList.innerHTML = schedules.length
+        ? schedules.map(renderSettingItem).join('')
+        : '<div class="empty">No schedule option yet.</div>';
+
+      periodList.innerHTML = periods.length
+        ? periods.map(renderSettingItem).join('')
+        : '<div class="empty">No period option yet.</div>';
+
+      document.querySelectorAll('[data-action="edit-setting"]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          openSettingModal(button.getAttribute('data-type'), button.getAttribute('data-id'));
+        });
+      });
+
+      document.querySelectorAll('[data-action="delete-setting"]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          confirmDeleteSetting(button.getAttribute('data-id'));
+        });
+      });
+    }
+
+    function renderSettingItem(item) {
+      return `
+        <div class="list-item">
+          <div>
+            <strong>${escapeHtml(item.Value)}</strong>
+            <span>${escapeHtml(item.Type)} · ${escapeHtml(item.SettingID)}</span>
+          </div>
+
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-soft" type="button" data-action="edit-setting" data-type="${escapeAttr(item.Type)}" data-id="${escapeAttr(item.SettingID)}">
+              Edit
+            </button>
+
+            <button class="btn btn-danger" type="button" data-action="delete-setting" data-id="${escapeAttr(item.SettingID)}">
+              Delete
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function fillClassDropdowns() {
+      const branchSelect = document.getElementById('classBranch');
+      const scheduleSelect = document.getElementById('classSchedule');
+      const periodSelect = document.getElementById('classPeriod');
+
+      branchSelect.innerHTML = state.branches.map(function (branch) {
+        return '<option value="' + escapeAttr(branch.BranchID) + '">' + escapeHtml(branch.BranchName) + '</option>';
+      }).join('');
+
+      scheduleSelect.innerHTML = '<option value="">Choose schedule</option>' + state.settingOptions.schedules.map(function (value) {
+        return '<option value="' + escapeAttr(value) + '">' + escapeHtml(value) + '</option>';
+      }).join('');
+
+      periodSelect.innerHTML = '<option value="">Choose period</option>' + state.settingOptions.periods.map(function (value) {
+        return '<option value="' + escapeAttr(value) + '">' + escapeHtml(value) + '</option>';
+      }).join('');
+    }
+
+    function getSelectedBranch() {
+      return state.branches.find(function (branch) {
+        return branch.BranchID === state.selectedBranchId;
+      });
+    }
+
+    function getSelectedBranchClasses() {
+      return state.classes.filter(function (item) {
+        return item.BranchID === state.selectedBranchId;
+      });
+    }
+
+    function openClassModal(classId) {
+      clearModalAlert('classAlert');
+      fillClassDropdowns();
+
+      const isEdit = Boolean(classId);
+      const cls = isEdit
+        ? state.classes.find(function (item) {
+            return item.ClassID === classId;
+          })
+        : null;
+
+      document.getElementById('classModalTitle').textContent = isEdit ? 'Edit Class' : 'Add Class';
+      document.getElementById('classId').value = cls ? cls.ClassID : '';
+      document.getElementById('classBranch').value = cls ? cls.BranchID : state.selectedBranchId;
+      document.getElementById('className').value = cls ? cls.ClassName || '' : '';
+      document.getElementById('classLevel').value = cls ? cls.Level || '' : '';
+      document.getElementById('classSchedule').value = cls ? cls.Schedule || '' : '';
+      document.getElementById('classPeriod').value = cls ? cls.Period || '' : '';
+      document.getElementById('trainerName').value = cls ? cls.TrainerName || '' : '';
+      document.getElementById('trainerPhone').value = cls ? cls.TrainerPhone || '' : '';
+      document.getElementById('trainerEmail').value = cls ? cls.TrainerEmail || '' : '';
+      document.getElementById('driveLink').value = cls ? cls.DriveLink || '' : '';
+      document.getElementById('classNotes').value = cls ? cls.Notes || '' : '';
+
+      const branchSelect = document.getElementById('classBranch');
+
+      if (state.user && state.user.role === 'Trainer') {
+        branchSelect.value = state.user.branchId;
+        branchSelect.disabled = true;
+      } else {
+        branchSelect.disabled = false;
+      }
+
+      openModal('classModal');
+    }
+
+    function handleSaveClass(event) {
+      event.preventDefault();
+
+      const payload = {
+        ClassID: document.getElementById('classId').value.trim(),
+        BranchID: document.getElementById('classBranch').value.trim(),
+        ClassName: document.getElementById('className').value.trim(),
+        Level: document.getElementById('classLevel').value.trim(),
+        Schedule: document.getElementById('classSchedule').value.trim(),
+        Period: document.getElementById('classPeriod').value.trim(),
+        TrainerName: document.getElementById('trainerName').value.trim(),
+        TrainerPhone: document.getElementById('trainerPhone').value.trim(),
+        TrainerEmail: document.getElementById('trainerEmail').value.trim(),
+        DriveLink: document.getElementById('driveLink').value.trim(),
+        Notes: document.getElementById('classNotes').value.trim()
+      };
+
+      setButtonLoading('saveClassButton', true, 'Saving...');
+
+      callBackend('saveClass', {
+        token: state.token,
+        classData: payload
+      })
+        .then(function (response) {
+          setButtonLoading('saveClassButton', false, 'Save Class');
+
+          if (!response || !response.success) {
+            showModalAlert('classAlert', response && response.message ? response.message : 'Failed to save class.', 'error');
+            return;
+          }
+
+          closeModal('classModal');
+          reloadData({ message: 'Class saved successfully.' });
+        })
+        .catch(function (error) {
+          setButtonLoading('saveClassButton', false, 'Save Class');
+          showModalAlert('classAlert', error && error.message ? error.message : 'Failed to save class.', 'error');
+        });
+    }
+
+    function confirmDeleteClass(classId) {
+      const cls = state.classes.find(function (item) {
+        return item.ClassID === classId;
+      });
+
+      const name = cls ? cls.ClassName : classId;
+
+      if (!confirm('Delete class "' + name + '"?')) return;
+
+      callBackend('deleteClass', {
+        token: state.token,
+        classId: classId
+      })
+        .then(function (response) {
+          if (!response || !response.success) {
+            showToast(response && response.message ? response.message : 'Failed to delete class.');
+            return;
+          }
+
+          reloadData({ message: 'Class deleted successfully.' });
+        })
+        .catch(function (error) {
+          showToast(error && error.message ? error.message : 'Failed to delete class.');
+        });
+    }
+
+    function openBranchModal(branchId) {
+      clearModalAlert('branchAlert');
+
+      const isEdit = Boolean(branchId);
+      const branch = isEdit
+        ? state.branches.find(function (item) {
+            return item.BranchID === branchId;
+          })
+        : null;
+
+      document.getElementById('branchModalTitle').textContent = isEdit ? 'Edit Branch' : 'Add Branch';
+      document.getElementById('branchId').value = branch ? branch.BranchID : '';
+      document.getElementById('branchName').value = branch ? branch.BranchName || '' : '';
+
+      openModal('branchModal');
+    }
+
+    function handleSaveBranch(event) {
+      event.preventDefault();
+
+      const payload = {
+        BranchID: document.getElementById('branchId').value.trim(),
+        BranchName: document.getElementById('branchName').value.trim()
+      };
+
+      setButtonLoading('saveBranchButton', true, 'Saving...');
+
+      callBackend('saveBranch', {
+        token: state.token,
+        branchData: payload
+      })
+        .then(function (response) {
+          setButtonLoading('saveBranchButton', false, 'Save Branch');
+
+          if (!response || !response.success) {
+            showModalAlert('branchAlert', response && response.message ? response.message : 'Failed to save branch.', 'error');
+            return;
+          }
+
+          closeModal('branchModal');
+          reloadData({ message: 'Branch saved successfully.' });
+        })
+        .catch(function (error) {
+          setButtonLoading('saveBranchButton', false, 'Save Branch');
+          showModalAlert('branchAlert', error && error.message ? error.message : 'Failed to save branch.', 'error');
+        });
+    }
+
+    function confirmDeleteBranch(branchId) {
+      const branch = state.branches.find(function (item) {
+        return item.BranchID === branchId;
+      });
+
+      const name = branch ? branch.BranchName : branchId;
+
+      if (!confirm('Delete branch "' + name + '"? Classes will not be deleted, but the branch will become inactive.')) return;
+
+      callBackend('deleteBranch', {
+        token: state.token,
+        branchId: branchId
+      })
+        .then(function (response) {
+          if (!response || !response.success) {
+            showToast(response && response.message ? response.message : 'Failed to delete branch.');
+            return;
+          }
+
+          reloadData({ message: 'Branch deleted successfully.' });
+        })
+        .catch(function (error) {
+          showToast(error && error.message ? error.message : 'Failed to delete branch.');
+        });
+    }
+
+    function openSettingModal(type, settingId) {
+      clearModalAlert('settingAlert');
+
+      const isEdit = Boolean(settingId);
+      const setting = isEdit
+        ? state.settings.find(function (item) {
+            return item.SettingID === settingId;
+          })
+        : null;
+
+      document.getElementById('settingModalTitle').textContent = isEdit ? 'Edit Setting' : 'Add ' + type;
+      document.getElementById('settingId').value = setting ? setting.SettingID : '';
+      document.getElementById('settingType').value = setting ? setting.Type : type;
+      document.getElementById('settingValue').value = setting ? setting.Value || '' : '';
+
+      openModal('settingModal');
+    }
+
+    function handleSaveSetting(event) {
+      event.preventDefault();
+
+      const payload = {
+        SettingID: document.getElementById('settingId').value.trim(),
+        Type: document.getElementById('settingType').value.trim(),
+        Value: document.getElementById('settingValue').value.trim()
+      };
+
+      setButtonLoading('saveSettingButton', true, 'Saving...');
+
+      callBackend('saveSetting', {
+        token: state.token,
+        settingData: payload
+      })
+        .then(function (response) {
+          setButtonLoading('saveSettingButton', false, 'Save Setting');
+
+          if (!response || !response.success) {
+            showModalAlert('settingAlert', response && response.message ? response.message : 'Failed to save setting.', 'error');
+            return;
+          }
+
+          closeModal('settingModal');
+          reloadData({ message: 'Setting saved successfully.' });
+        })
+        .catch(function (error) {
+          setButtonLoading('saveSettingButton', false, 'Save Setting');
+          showModalAlert('settingAlert', error && error.message ? error.message : 'Failed to save setting.', 'error');
+        });
+    }
+
+    function confirmDeleteSetting(settingId) {
+      const setting = state.settings.find(function (item) {
+        return item.SettingID === settingId;
+      });
+
+      const name = setting ? setting.Value : settingId;
+
+      if (!confirm('Delete setting "' + name + '"?')) return;
+
+      callBackend('deleteSetting', {
+        token: state.token,
+        settingId: settingId
+      })
+        .then(function (response) {
+          if (!response || !response.success) {
+            showToast(response && response.message ? response.message : 'Failed to delete setting.');
+            return;
+          }
+
+          reloadData({ message: 'Setting deleted successfully.' });
+        })
+        .catch(function (error) {
+          showToast(error && error.message ? error.message : 'Failed to delete setting.');
+        });
+    }
+
+    function openDriveLink(link) {
+      link = String(link || '').trim();
+
+      if (!link) {
+        showToast('No link available for this class.');
+        return;
+      }
+
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
+
+    function openLogoutConfirm() {
+      document.getElementById('logoutConfirmModal').style.display = 'flex';
+      setButtonLoading('confirmLogoutButton', false, 'Yes, Logout');
+      document.getElementById('cancelLogoutButton').disabled = false;
+    }
+
+    function closeLogoutConfirm() {
+      document.getElementById('logoutConfirmModal').style.display = 'none';
+    }
+
+    function executeLogout() {
+      setButtonLoading('confirmLogoutButton', true, 'Logging out...');
+      document.getElementById('cancelLogoutButton').disabled = true;
+
+      callBackend('logout', {
+        token: state.token
+      })
+        .then(function () {
+          clearSession();
+          goToLogin();
+        })
+        .catch(function () {
+          clearSession();
+          goToLogin();
+        });
+    }
+
+    function goToLogin() {
+      clearSession();
+      window.location.href = LOGIN_URL;
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeButton(savedTheme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      localStorage.setItem(STORAGE_KEYS.THEME, nextTheme);
+      updateThemeButton(nextTheme);
+    }
+
+    function updateThemeButton(theme) {
+      const button = document.getElementById('themeButton');
+      if (!button) return;
+
+      button.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+    }
+
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function showModalAlert(id, message, type) {
+      const alert = document.getElementById(id);
+      alert.textContent = message;
+      alert.className = 'alert show ' + type;
+    }
+
+    function clearModalAlert(id) {
+      const alert = document.getElementById(id);
+      alert.textContent = '';
+      alert.className = 'alert';
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+
+      setTimeout(function () {
+        toast.classList.remove('show');
+      }, 2600);
+    }
+
+    function setButtonLoading(id, isLoading, text) {
+      const button = document.getElementById(id);
+      button.disabled = isLoading;
+      button.textContent = text;
+    }
+
+    function clearSession() {
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
+    }
+
+    function callBackend(action, payload) {
+      payload = payload || {};
+
+      if (
+        typeof google !== 'undefined' &&
+        google.script &&
+        google.script.run
+      ) {
+        return callGasRuntime(action, payload);
+      }
+
+      return callGasJsonp(action, payload);
+    }
+
+    function callGasRuntime(action, payload) {
+      return new Promise(function (resolve, reject) {
+        google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(reject)
+          .api(action, payload);
+      });
+    }
+
+    function callGasJsonp(action, payload) {
+      return new Promise(function (resolve, reject) {
+        const baseUrl = String(GAS_WEB_APP_URL || '').trim();
+
+        if (!baseUrl || baseUrl.indexOf('script.google.com') === -1) {
+          reject(new Error('GAS Web App URL is not configured.'));
+          return;
+        }
+
+        const callbackName = 'kipApiCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        const script = document.createElement('script');
+
+        const timeout = setTimeout(function () {
+          cleanup();
+          reject(new Error('Request timeout. Please try again.'));
+        }, 30000);
+
+        window[callbackName] = function (response) {
+          cleanup();
+          resolve(response);
+        };
+
+        function cleanup() {
+          clearTimeout(timeout);
+
+          try {
+            delete window[callbackName];
+          } catch (err) {
+            window[callbackName] = undefined;
+          }
+
+          if (script && script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        }
+
+        script.onerror = function () {
+          cleanup();
+          reject(new Error('Failed to connect to GAS backend.'));
+        };
+
+        const query = [
+          'action=' + encodeURIComponent(action),
+          'callback=' + encodeURIComponent(callbackName),
+          'payload=' + encodeURIComponent(JSON.stringify(payload))
+        ].join('&');
+
+        script.src = baseUrl.split('?')[0] + '?' + query;
+
+        document.body.appendChild(script);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replaceAll('`', '&#096;');
+    }
+  </script>
+</body>
+</html>
