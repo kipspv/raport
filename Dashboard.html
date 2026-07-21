@@ -1384,8 +1384,8 @@
      ****************************************************/
 
     const APP_NAME = 'KIP Class Link Portal';
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxadV9vBjCn6rXfnfIPBpfJtVMGxTAWwoVFYSCtBYxyYlc8YD6iDW4NkTRqruCsW1vr/exec';
-    const LOGIN_URL = 'Index.html';
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwv8ytIDE-0EkX8Px-VW2Mtyf6NaVsZWikRXC5D0qbWAgFuxGSaibIfZrDb2iiYwDR_/exec';
+    const LOGIN_URL = 'index.html';
     const REQUEST_TIMEOUT_MS = 30000;
 
     const STORAGE_KEYS = {
@@ -1429,6 +1429,12 @@
       initTheme();
       bindEvents();
       bootDashboard();
+    });
+
+    window.addEventListener('pageshow', function () {
+      if (!getStoredToken()) {
+        redirectToLogin();
+      }
     });
 
     function bindEvents() {
@@ -2441,20 +2447,45 @@
     }
 
     function executeLogout() {
+      const token = state.token || getStoredToken();
+
       setButtonLoading('confirmLogoutButton', true, 'Logging out...');
       byId('cancelLogoutButton').disabled = true;
 
-      apiRequest('logout', { token: state.token }, { handleSession: false })
-        .finally(function () {
-          clearSession();
-          redirectToLogin();
-        });
+      clearSession();
+      sendLogoutBestEffort(token);
+      redirectToLogin();
     }
 
-    function expireSession(message) {
+    function sendLogoutBestEffort(token) {
+      token = String(token || '').trim();
+      if (!token) return;
+
+      const baseUrl = String(GAS_WEB_APP_URL || '').trim().split('?')[0];
+
+      if (baseUrl && navigator.sendBeacon) {
+        try {
+          const body = new URLSearchParams();
+          body.set('action', 'logout');
+          body.set('payload', JSON.stringify({ token: token }));
+          const blob = new Blob([body.toString()], {
+            type: 'application/x-www-form-urlencoded;charset=UTF-8'
+          });
+
+          if (navigator.sendBeacon(baseUrl, blob)) return;
+        } catch (err) {
+          // Fall through to the normal request without delaying navigation.
+        }
+      }
+
+      callBackend('logout', { token: token }).catch(function () {
+        // Browser session has already been cleared; server cleanup is best effort.
+      });
+    }
+
+    function expireSession() {
       clearSession();
-      showToast(message || 'Session expired. Please login again.');
-      setTimeout(redirectToLogin, 700);
+      redirectToLogin();
     }
 
     function goToLogin() {
@@ -2463,13 +2494,7 @@
     }
 
     function redirectToLogin() {
-      if (typeof google !== 'undefined' && google.script && google.script.run) {
-        const base = String(GAS_WEB_APP_URL || '').split('?')[0];
-        window.location.href = base ? base + '?page=Index' : LOGIN_URL;
-        return;
-      }
-
-      window.location.href = LOGIN_URL;
+      window.location.replace(LOGIN_URL);
     }
 
     function initTheme() {
