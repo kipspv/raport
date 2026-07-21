@@ -3,24 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>KIP Class Link Portal</title>
-
   <style>
     :root {
       --primary: #1f4e79;
       --primary-dark: #163955;
       --primary-soft: #eaf3fb;
       --accent: #f5b942;
+      --bg: #f3f6fb;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
       --text: #1f2937;
       --muted: #6b7280;
       --border: #d1d5db;
       --danger: #dc2626;
       --success: #16a34a;
-      --bg: #f3f6fb;
-      --white: #ffffff;
-      --shadow: 0 24px 60px rgba(15, 23, 42, 0.14);
-      --radius: 24px;
+      --shadow: 0 24px 70px rgba(15, 23, 42, 0.15);
+    }
+
+    [data-theme="dark"] {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      --primary-soft: #172554;
+      --accent: #facc15;
+      --bg: #0f172a;
+      --surface: #111827;
+      --surface-2: #1f2937;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #374151;
+      --danger: #f87171;
+      --success: #4ade80;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
     }
 
     * {
@@ -32,15 +46,15 @@
 
     body {
       min-height: 100vh;
-      background:
-        radial-gradient(circle at top left, rgba(31, 78, 121, 0.18), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(245, 185, 66, 0.15), transparent 32%),
-        linear-gradient(135deg, #f3f6fb 0%, #eef4fb 48%, #ffffff 100%);
       color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(31, 78, 121, 0.20), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(245, 185, 66, 0.16), transparent 30%),
+        var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 22px;
+      padding: 24px;
     }
 
     button,
@@ -48,114 +62,154 @@
       font: inherit;
     }
 
-    .login-page {
+    .page {
       width: 100%;
-      max-width: 460px;
-    }
-
-    .login-card {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(209, 213, 219, 0.85);
-      border-radius: var(--radius);
-      padding: 38px;
+      max-width: 1040px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      overflow: hidden;
+      border-radius: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
     }
 
-    .logo-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 22px;
-    }
-
-    .logo-box {
-      width: 68px;
-      height: 68px;
-      border-radius: 22px;
-      background:
-        radial-gradient(circle at top right, rgba(245, 185, 66, 0.32), transparent 42%),
-        var(--primary);
+    .visual {
+      min-height: 620px;
+      padding: 48px;
       color: #ffffff;
+      background:
+        radial-gradient(circle at top right, rgba(245, 185, 66, 0.28), transparent 30%),
+        linear-gradient(145deg, #1f4e79, #163955);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 17px;
+      background: #ffffff;
+      color: #1f4e79;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 22px;
-      letter-spacing: -0.6px;
-      box-shadow: 0 16px 28px rgba(31, 78, 121, 0.22);
+      letter-spacing: -0.5px;
     }
 
-    .login-header {
-      text-align: center;
-      margin-bottom: 28px;
+    .brand h1 {
+      font-size: 20px;
     }
 
-    .login-header h1 {
-      font-size: 29px;
-      line-height: 1.18;
-      letter-spacing: -0.7px;
-      margin-bottom: 9px;
-      color: var(--text);
+    .brand p {
+      margin-top: 3px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
     }
 
-    .login-header p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
+    .visual-copy h2 {
+      max-width: 520px;
+      font-size: 42px;
+      line-height: 1.08;
+      letter-spacing: -1.2px;
+      margin-bottom: 16px;
     }
 
-    .alert {
-      display: none;
-      padding: 13px 14px;
-      border-radius: 15px;
-      margin-bottom: 18px;
-      font-size: 13px;
+    .visual-copy p {
+      max-width: 500px;
+      color: rgba(255, 255, 255, 0.80);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .feature {
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 12px;
       line-height: 1.5;
     }
 
-    .alert.error {
+    .feature strong {
       display: block;
-      color: #991b1b;
-      background: #fee2e2;
-      border: 1px solid #fecaca;
+      margin-bottom: 4px;
+      font-size: 13px;
     }
 
-    .alert.success {
-      display: block;
-      color: #166534;
-      background: #dcfce7;
-      border: 1px solid #bbf7d0;
+    .login-panel {
+      padding: 48px 42px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .theme-button {
+      position: absolute;
+      right: 24px;
+      top: 24px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 9px 11px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .login-panel h2 {
+      font-size: 29px;
+      letter-spacing: -0.7px;
+      margin-bottom: 8px;
+    }
+
+    .login-panel > p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 28px;
     }
 
     .form-group {
-      margin-bottom: 18px;
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
     label {
-      display: block;
       font-size: 13px;
       font-weight: 800;
-      color: #374151;
-      margin-bottom: 8px;
     }
 
     input {
       width: 100%;
       border: 1px solid var(--border);
-      background: #f9fafb;
+      border-radius: 13px;
+      padding: 12px 13px;
       color: var(--text);
-      border-radius: 15px;
-      padding: 14px 15px;
-      font-size: 15px;
+      background: var(--surface-2);
       outline: none;
-      transition: 0.2s ease;
     }
 
     input:focus {
       border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(31, 78, 121, 0.12);
+      box-shadow: 0 0 0 4px rgba(31, 78, 121, 0.13);
     }
 
     .password-wrap {
@@ -166,455 +220,470 @@
       padding-right: 72px;
     }
 
-    .toggle-password {
+    .password-toggle {
       position: absolute;
+      right: 7px;
       top: 50%;
-      right: 11px;
       transform: translateY(-50%);
       border: none;
       background: transparent;
       color: var(--primary);
-      cursor: pointer;
-      font-weight: 900;
+      font-weight: 800;
       font-size: 12px;
-      padding: 6px;
+      cursor: pointer;
+      padding: 8px;
     }
 
-    .btn {
+    .login-button {
       width: 100%;
       border: none;
+      border-radius: 13px;
+      padding: 13px 15px;
       background: var(--primary);
       color: #ffffff;
-      padding: 15px 18px;
-      border-radius: 16px;
-      font-size: 15px;
       font-weight: 900;
       cursor: pointer;
-      transition: 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 6px;
+      transition: 0.18s ease;
+      margin-top: 4px;
     }
 
-    .btn:hover {
+    .login-button:hover {
       background: var(--primary-dark);
       transform: translateY(-1px);
     }
 
-    .btn:disabled {
-      opacity: 0.68;
+    .login-button:disabled {
+      opacity: 0.65;
       cursor: not-allowed;
       transform: none;
     }
 
-    .btn-secondary {
-      background: #eef2f7;
-      color: var(--text);
-      border: 1px solid var(--border);
-      margin-top: 16px;
-    }
-
-    .btn-secondary:hover {
-      background: #e5e7eb;
-    }
-
-    .footer-text {
-      margin-top: 22px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
+    .alert {
+      display: none;
+      padding: 12px 13px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 13px;
       line-height: 1.5;
     }
 
-    .loading-screen {
-      display: none;
-      width: 100%;
-      max-width: 430px;
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(209, 213, 219, 0.85);
-      padding: 36px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      text-align: center;
-      backdrop-filter: blur(14px);
+    .alert.show {
+      display: block;
     }
 
-    .spinner {
-      width: 42px;
-      height: 42px;
-      border: 4px solid #dbeafe;
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 18px;
+    .alert.error {
+      color: #991b1b;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
     }
 
-    .loading-screen h3 {
-      font-size: 21px;
-      margin-bottom: 8px;
+    .alert.success {
+      color: #166534;
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
     }
 
-    .loading-screen p {
+    [data-theme="dark"] .alert.error {
+      color: #fecaca;
+      background: #451a1a;
+      border-color: #7f1d1d;
+    }
+
+    [data-theme="dark"] .alert.success {
+      color: #bbf7d0;
+      background: #14532d;
+      border-color: #166534;
+    }
+
+    .status {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
+      font-size: 12px;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .status.online .status-dot {
+      background: var(--success);
+    }
+
+    .status.offline .status-dot {
+      background: var(--danger);
+    }
+
+    @media (max-width: 820px) {
+      .page {
+        grid-template-columns: 1fr;
+        max-width: 560px;
+      }
+
+      .visual {
+        min-height: auto;
+        padding: 34px;
+        gap: 48px;
+      }
+
+      .visual-copy h2 {
+        font-size: 32px;
+      }
+
+      .login-panel {
+        padding: 58px 30px 36px;
       }
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: 480px) {
       body {
-        padding: 14px;
-        align-items: flex-start;
+        padding: 12px;
       }
 
-      .login-card,
-      .loading-screen {
-        padding: 28px 22px;
-        border-radius: 20px;
+      .feature-grid {
+        grid-template-columns: 1fr;
       }
 
-      .login-header h1 {
-        font-size: 25px;
+      .visual {
+        padding: 26px;
+      }
+
+      .login-panel {
+        padding: 58px 22px 28px;
       }
     }
   </style>
 </head>
-
 <body>
-  <main class="login-page" id="loginPage">
-    <section class="login-card">
-      <div class="logo-wrap">
-        <div class="logo-box">KIP</div>
+  <main class="page">
+    <section class="visual">
+      <div class="brand">
+        <div class="logo">KIP</div>
+        <div>
+          <h1>KIP Class Link Portal</h1>
+          <p>Branch, class, and learning-link management</p>
+        </div>
       </div>
 
-      <div class="login-header">
-        <h1>Class Link Portal</h1>
-        <p>Login using your Trainer or Manager account.</p>
+      <div class="visual-copy">
+        <h2>One portal for every class link.</h2>
+        <p>
+          Managers can manage every branch and feature. Trainers use the same class and link tools inside their assigned branch.
+        </p>
       </div>
 
-      <div id="alertBox" class="alert"></div>
+      <div class="feature-grid">
+        <div class="feature">
+          <strong>Reliable CRUD</strong>
+          Create, edit, delete, and refresh without duplicated cards.
+        </div>
+        <div class="feature">
+          <strong>Direct Link Updates</strong>
+          Add or replace a link on the existing class row.
+        </div>
+        <div class="feature">
+          <strong>Branch Scope</strong>
+          Managers access all branches; trainers stay in their assigned branch.
+        </div>
+        <div class="feature">
+          <strong>Fast Dashboard</strong>
+          Updated records appear immediately without unnecessary full reloads.
+        </div>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <button class="theme-button" id="themeButton" type="button">Dark Mode</button>
+
+      <h2>Welcome back</h2>
+      <p>Sign in with your Manager or Trainer account.</p>
+
+      <div class="alert" id="loginAlert"></div>
 
       <form id="loginForm">
         <div class="form-group">
           <label for="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Enter your username"
-            autocomplete="username"
-            required
-          >
+          <input id="username" type="text" autocomplete="username" placeholder="Enter username" required>
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-
           <div class="password-wrap">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Enter your password"
-              autocomplete="current-password"
-              required
-            >
-
-            <button type="button" class="toggle-password" id="togglePassword">
-              SHOW
-            </button>
+            <input id="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+            <button class="password-toggle" id="passwordToggle" type="button">Show</button>
           </div>
         </div>
 
-        <button type="submit" class="btn" id="loginButton">
-          <span id="buttonText">Login</span>
-        </button>
+        <button class="login-button" id="loginButton" type="submit">Login</button>
       </form>
 
-      <div class="footer-text">
-        Kampung Inggris Pontianak
+      <div class="status" id="backendStatus">
+        <span class="status-dot"></span>
+        <span id="backendStatusText">Checking backend...</span>
       </div>
     </section>
   </main>
 
-  <section class="loading-screen" id="loadingScreen">
-    <div class="spinner" id="loadingSpinner"></div>
-
-    <h3 id="loadingTitle">Checking session</h3>
-    <p id="loadingText">Please wait while we verify your saved login.</p>
-
-    <button class="btn btn-secondary" id="backToLoginButton" type="button">
-      Back to Login
-    </button>
-  </section>
-
   <script>
-    /****************************************************
-     * KIP CLASS LINK PORTAL - GITHUB READY LOGIN PAGE
-     *
-     * Works in two modes:
-     * 1. GAS hosted mode:
-     *    Uses google.script.run when available.
-     *
-     * 2. GitHub static mode:
-     *    Uses GAS Web App API bridge through JSONP.
-     *
-     * Required backend:
-     * Rewritten migration-ready Code.gs with api/action support.
-     ****************************************************/
-
     const APP_NAME = 'KIP Class Link Portal';
-
-    /*
-     * For GitHub Pages:
-     * Paste your deployed GAS Web App /exec URL here.
-     *
-     * Example:
-     * const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxxxx/exec';
-     */
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby-BnecTI4lT9I_Sj9iq4rVhG8VrPIz9pxmAtjp2n4le2YkJ3-F0P1lNyUR19rhEC-Q/exec';
-
-    /*
-     * For GitHub migration:
-     * Set this to the dashboard page path.
-     *
-     * Same folder:
-     * Dashboard.html
-     *
-     * Or React route later:
-     * /dashboard
-     */
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxadV9vBjCn6rXfnfIPBpfJtVMGxTAWwoVFYSCtBYxyYlc8YD6iDW4NkTRqruCsW1vr/exec';
     const DASHBOARD_URL = 'Dashboard.html';
+    const REQUEST_TIMEOUT_MS = 30000;
 
     const STORAGE_KEYS = {
       TOKEN: 'kip_class_portal_token',
-      USER: 'kip_class_portal_user'
+      USER: 'kip_class_portal_user',
+      THEME: 'kip_class_portal_theme'
     };
 
     document.addEventListener('DOMContentLoaded', function () {
       document.title = APP_NAME;
+      initTheme();
       bindEvents();
-      checkSavedSession();
+      checkExistingSession();
+      checkBackend();
     });
 
     function bindEvents() {
       document.getElementById('loginForm').addEventListener('submit', handleLogin);
-      document.getElementById('togglePassword').addEventListener('click', togglePassword);
-      document.getElementById('backToLoginButton').addEventListener('click', showLogin);
-    }
-
-    function checkSavedSession() {
-      const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-
-      if (!token) {
-        showLogin();
-        return;
-      }
-
-      showLoading('Checking session', 'Please wait while we verify your saved login.', true);
-
-      callBackend('getCurrentUser', { token: token })
-        .then(function (response) {
-          if (response && response.success && response.user) {
-            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user));
-            goToDashboard();
-            return;
-          }
-
-          clearSession();
-          showLogin();
-        })
-        .catch(function () {
-          clearSession();
-          showLogin();
-        });
+      document.getElementById('themeButton').addEventListener('click', toggleTheme);
+      document.getElementById('passwordToggle').addEventListener('click', togglePassword);
     }
 
     function handleLogin(event) {
       event.preventDefault();
 
       const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
+      const password = document.getElementById('password').value;
 
-      if (!username || !password) {
-        showAlert('Please enter username and password.', 'error');
-        return;
-      }
-
-      setLoginLoading(true);
       clearAlert();
+      setLoginLoading(true);
 
       callBackend('login', {
         username: username,
         password: password
       })
         .then(function (response) {
-          setLoginLoading(false);
-
           if (!response || !response.success) {
             showAlert(response && response.message ? response.message : 'Login failed.', 'error');
             return;
           }
 
-          localStorage.setItem(STORAGE_KEYS.TOKEN, response.token);
-          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user));
+          sessionStorage.setItem(STORAGE_KEYS.TOKEN, response.token);
+          sessionStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user || {}));
+          localStorage.removeItem(STORAGE_KEYS.TOKEN);
+          localStorage.removeItem(STORAGE_KEYS.USER);
 
           showAlert('Login successful. Opening dashboard...', 'success');
-
-          setTimeout(function () {
-            goToDashboard();
-          }, 350);
+          setTimeout(redirectToDashboard, 300);
         })
         .catch(function (error) {
+          showAlert(error && error.message ? error.message : 'Unable to connect to the backend.', 'error');
+        })
+        .finally(function () {
           setLoginLoading(false);
-
-          const message = error && error.message
-            ? error.message
-            : 'Login failed. Please try again.';
-
-          showAlert(message, 'error');
         });
     }
 
-    function callBackend(action, payload) {
-      payload = payload || {};
+    function checkExistingSession() {
+      const token = sessionStorage.getItem(STORAGE_KEYS.TOKEN) || localStorage.getItem(STORAGE_KEYS.TOKEN);
+      if (!token) return;
 
-      if (
-        typeof google !== 'undefined' &&
-        google.script &&
-        google.script.run
-      ) {
-        return callGasRuntime(action, payload);
+      callBackend('getCurrentUser', { token: token })
+        .then(function (response) {
+          if (!response || !response.success) {
+            clearSession();
+            return;
+          }
+
+          sessionStorage.setItem(STORAGE_KEYS.TOKEN, token);
+          sessionStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user || {}));
+          localStorage.removeItem(STORAGE_KEYS.TOKEN);
+          localStorage.removeItem(STORAGE_KEYS.USER);
+          redirectToDashboard();
+        })
+        .catch(function () {
+          clearSession();
+        });
+    }
+
+    function checkBackend() {
+      callBackend('ping', {})
+        .then(function (response) {
+          setBackendStatus(Boolean(response && response.success));
+        })
+        .catch(function () {
+          setBackendStatus(false);
+        });
+    }
+
+    function setBackendStatus(online) {
+      const status = document.getElementById('backendStatus');
+      status.classList.remove('online', 'offline');
+      status.classList.add(online ? 'online' : 'offline');
+      document.getElementById('backendStatusText').textContent = online
+        ? 'Backend online'
+        : 'Backend unavailable';
+    }
+
+    function callBackend(action, payload) {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        return new Promise(function (resolve, reject) {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(function (error) {
+              reject(new Error(error && error.message ? error.message : String(error)));
+            })
+            .api(action, payload || {});
+        });
       }
 
-      return callGasJsonp(action, payload);
+      return callGasIframeBridge(action, payload || {});
     }
 
-    function callGasRuntime(action, payload) {
+    function callGasIframeBridge(action, payload) {
+      const baseUrl = String(GAS_WEB_APP_URL || '').trim();
+
+      if (!baseUrl || baseUrl.indexOf('script.google.com') === -1) {
+        return Promise.reject(new Error('GAS Web App URL is not configured.'));
+      }
+
       return new Promise(function (resolve, reject) {
-        google.script.run
-          .withSuccessHandler(resolve)
-          .withFailureHandler(reject)
-          .api(action, payload);
-      });
-    }
+        const requestId = 'kip_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+        const frameName = 'kip_bridge_' + requestId;
+        const iframe = document.createElement('iframe');
+        const form = document.createElement('form');
+        let settled = false;
 
-    function callGasJsonp(action, payload) {
-      return new Promise(function (resolve, reject) {
-        const baseUrl = String(GAS_WEB_APP_URL || '').trim();
+        iframe.name = frameName;
+        iframe.style.display = 'none';
+        iframe.setAttribute('aria-hidden', 'true');
 
-        if (!baseUrl || baseUrl.indexOf('script.google.com') === -1) {
-          reject(new Error('GAS Web App URL is not configured.'));
-          return;
-        }
+        form.method = 'POST';
+        form.action = baseUrl.split('?')[0];
+        form.target = frameName;
+        form.style.display = 'none';
 
-        const callbackName = 'kipApiCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-        const script = document.createElement('script');
+        appendHiddenField(form, 'transport', 'iframe');
+        appendHiddenField(form, 'requestId', requestId);
+        appendHiddenField(form, 'targetOrigin', window.location.origin === 'null' ? '*' : window.location.origin);
+        appendHiddenField(form, 'action', action);
+        appendHiddenField(form, 'payload', JSON.stringify(payload || {}));
 
         const timeout = setTimeout(function () {
-          cleanup();
-          reject(new Error('Request timeout. Please try again.'));
-        }, 30000);
+          finish(new Error('Request timeout. Please try again.'));
+        }, REQUEST_TIMEOUT_MS);
 
-        window[callbackName] = function (response) {
-          cleanup();
-          resolve(response);
-        };
+        function onMessage(event) {
+          if (!isTrustedBridgeOrigin(event.origin)) return;
 
-        function cleanup() {
-          clearTimeout(timeout);
+          const data = event.data || {};
+          if (data.channel !== 'KIP_GAS_BRIDGE' || data.requestId !== requestId) return;
 
-          try {
-            delete window[callbackName];
-          } catch (err) {
-            window[callbackName] = undefined;
-          }
-
-          if (script && script.parentNode) {
-            script.parentNode.removeChild(script);
-          }
+          finish(null, data.response);
         }
 
-        script.onerror = function () {
-          cleanup();
-          reject(new Error('Failed to connect to GAS backend.'));
-        };
+        function finish(error, response) {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          window.removeEventListener('message', onMessage);
 
-        const query = [
-          'action=' + encodeURIComponent(action),
-          'callback=' + encodeURIComponent(callbackName),
-          'payload=' + encodeURIComponent(JSON.stringify(payload))
-        ].join('&');
+          if (form.parentNode) form.parentNode.removeChild(form);
+          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
 
-        script.src = baseUrl.split('?')[0] + '?' + query;
+          if (error) reject(error);
+          else resolve(response);
+        }
 
-        document.body.appendChild(script);
+        window.addEventListener('message', onMessage);
+        document.body.appendChild(iframe);
+        document.body.appendChild(form);
+        form.submit();
       });
     }
 
-    function goToDashboard() {
+    function appendHiddenField(form, name, value) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = String(value === null || value === undefined ? '' : value);
+      form.appendChild(input);
+    }
+
+    function isTrustedBridgeOrigin(origin) {
+      try {
+        const hostname = new URL(origin).hostname.toLowerCase();
+        return hostname === 'script.google.com' ||
+          hostname === 'script.googleusercontent.com' ||
+          hostname.endsWith('.googleusercontent.com');
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function redirectToDashboard() {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        const base = String(GAS_WEB_APP_URL || '').split('?')[0];
+        window.location.href = base ? base + '?page=Dashboard' : DASHBOARD_URL;
+        return;
+      }
       window.location.href = DASHBOARD_URL;
     }
 
     function togglePassword() {
-      const passwordInput = document.getElementById('password');
-      const toggleButton = document.getElementById('togglePassword');
-
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleButton.textContent = 'HIDE';
-      } else {
-        passwordInput.type = 'password';
-        toggleButton.textContent = 'SHOW';
-      }
+      const input = document.getElementById('password');
+      const button = document.getElementById('passwordToggle');
+      const visible = input.type === 'text';
+      input.type = visible ? 'password' : 'text';
+      button.textContent = visible ? 'Show' : 'Hide';
     }
 
-    function showLogin() {
-      document.getElementById('loadingScreen').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'block';
-      clearAlert();
+    function initTheme() {
+      const theme = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      updateThemeButton(theme);
     }
 
-    function showLoading(title, text, showSpinner) {
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('loadingScreen').style.display = 'block';
-
-      document.getElementById('loadingTitle').textContent = title || 'Loading';
-      document.getElementById('loadingText').textContent = text || 'Please wait.';
-
-      document.getElementById('loadingSpinner').style.display = showSpinner ? 'block' : 'none';
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEYS.THEME, next);
+      updateThemeButton(next);
     }
 
-    function setLoginLoading(isLoading) {
-      const button = document.getElementById('loginButton');
-      const buttonText = document.getElementById('buttonText');
-
-      button.disabled = isLoading;
-      buttonText.textContent = isLoading ? 'Logging in...' : 'Login';
+    function updateThemeButton(theme) {
+      document.getElementById('themeButton').textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
     }
 
     function showAlert(message, type) {
-      const alertBox = document.getElementById('alertBox');
-
-      alertBox.textContent = message;
-      alertBox.className = 'alert ' + type;
+      const alert = document.getElementById('loginAlert');
+      alert.textContent = message;
+      alert.className = 'alert show ' + type;
     }
 
     function clearAlert() {
-      const alertBox = document.getElementById('alertBox');
+      const alert = document.getElementById('loginAlert');
+      alert.textContent = '';
+      alert.className = 'alert';
+    }
 
-      alertBox.textContent = '';
-      alertBox.className = 'alert';
+    function setLoginLoading(loading) {
+      const button = document.getElementById('loginButton');
+      button.disabled = loading;
+      button.textContent = loading ? 'Logging in...' : 'Login';
     }
 
     function clearSession() {
+      sessionStorage.removeItem(STORAGE_KEYS.TOKEN);
+      sessionStorage.removeItem(STORAGE_KEYS.USER);
       localStorage.removeItem(STORAGE_KEYS.TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER);
     }
